@@ -1,15 +1,16 @@
 package com.bridgelabz.workshop;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class FoodManager {
     private static FoodManager instance;
     Set<FoodItem> foodList = new HashSet<>();
 
-    private FoodManager() {}
+    private FoodManager() {
+    }
 
     public static synchronized FoodManager getInstance() {
         if (instance == null) {
@@ -38,35 +39,22 @@ public class FoodManager {
     }
 
     void printAllFoodItems() {
-        for (FoodItem i : foodList) {
-            System.out.println(i);
-        }
+        Stream.of(foodList).forEach(System.out::println);
     }
 
     void printAllVegItems() {
-        for (FoodItem i : foodList) {
-            if (i.type.equals(FoodItem.Type.VEG))
-                System.out.println(i);
-        }
+        foodList.stream().filter(item -> item.type.equals(FoodItem.Type.VEG))
+                .forEach(System.out::println);
     }
 
     void printAllNonVegItems() {
-        for (FoodItem i : foodList) {
-            if (i.type.equals(FoodItem.Type.NON_VEG))
-                System.out.println(i);
-        }
+        foodList.stream().filter(item -> item.type.equals(FoodItem.Type.NON_VEG))
+                .forEach(System.out::println);
     }
 
     public FoodItem getFoodItem(String name) {
-        Iterator<FoodItem> iterator = foodList.iterator();
-        for (FoodItem i : foodList) {
-            if (iterator.hasNext()) {
-                FoodItem foodItem = (FoodItem) iterator.next();
-                if (foodItem.name.equalsIgnoreCase(name))
-                    return foodItem;
-            }
-        }
-        return null;
+        return foodList.stream().filter(item -> item.name.equalsIgnoreCase(name))
+                .findFirst().orElse(null);
     }
 }
 

@@ -36,6 +36,6 @@ public class FoodItem {
                ", category = " + category +
                ", taste = " + taste +
                ", prepTime = " + prepTime +
-               ", price = " + price;
+               ", price = " + price + "\n";
     }
 }

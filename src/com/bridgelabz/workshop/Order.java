@@ -1,35 +1,42 @@
 package com.bridgelabz.workshop;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Order {
-    enum PAYMENT_METHODS{COD, CREDIT_CARD, DEBIT_CARD, NET_BANKING, UPI, WALLET}
+    enum PaymentMethods {COD, CREDIT_CARD, DEBIT_CARD, NET_BANKING, UPI, WALLET}
 
-    Map<FoodItem,Integer> hMap = new HashMap<>();
+    enum OrderStatus {WAITING, CANCELLED, ORDER_PREPARED, ORDER_DELIVERED,}
 
+    Map<FoodItem, Integer> hMap = new HashMap<>();
+
+    private int orderID;
     private String customerName;
     private long mobileNumber;
     private String deliveryAddress;
     private int totalPrice;
-    PAYMENT_METHODS paymentMethods;
+    private PaymentMethods paymentMethods;
+    private OrderStatus orderStatus = OrderStatus.WAITING;
     private java.util.Date dateAndTime;
 
     @Override
     public String toString() {
-        return "Order : " +
-               "customerName = '" + customerName + '\'' +
-               ", mobileNumber = " + mobileNumber +
-               ", deliveryAddress = '" + deliveryAddress + '\'' +
-               ", totalPrice = " + totalPrice +
-               ", paymentMethods = " + paymentMethods +
-               ", dateAndTime = " + dateAndTime;
+        return "\nOrder : " + "\n" +
+               "customerName = " + customerName + "\n" +
+               "mobileNumber = " + mobileNumber + "\n" +
+               "deliveryAddress = " + deliveryAddress + "\n" +
+               "totalPrice = " + totalPrice + "\n" +
+               "paymentMethods = " + paymentMethods + "\n" +
+               "orderStatus = " + orderStatus + "\n" +
+               "dateAndTime = " + dateAndTime + "\n";
     }
 
     public int setTotalPrice() {
         totalPrice = 0;
-        for (Map.Entry<FoodItem,Integer> i : hMap.entrySet()) {
-            totalPrice += i.getKey().price * i.getValue();
-        } return totalPrice;
+        totalPrice = hMap.entrySet().stream().map(entry -> entry.getKey().price * entry.getValue())
+                .reduce(0, Integer::sum);
+        return totalPrice;
     }
 
     public Date getDateAndTime() {
@@ -40,7 +47,7 @@ public class Order {
         this.dateAndTime = dateAndTime;
     }
 
-    public void setPaymentMethods(PAYMENT_METHODS paymentMethods) {
+    public void setPaymentMethods(PaymentMethods paymentMethods) {
         this.paymentMethods = paymentMethods;
     }
 
@@ -66,6 +73,22 @@ public class Order {
 
     public void setDeliveryAddress(String deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public int getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
     }
 }
 

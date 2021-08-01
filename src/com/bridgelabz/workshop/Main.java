@@ -1,17 +1,14 @@
 package com.bridgelabz.workshop;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     FoodManager foodManager = FoodManager.getInstance();
-
+    OrderManager orderManager = OrderManager.getInstance();
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
         Main main = new Main();
-
         main.showMenu();
     }
 
@@ -59,13 +56,22 @@ public class Main {
 
     void showMenu() {
         int choice = 0;
-        while (choice != 10) {
+        while (choice != 15) {
             System.out.println("\n1.Add food item ");
             System.out.println("2.Show food item ");
             System.out.println("3.Update food item ");
             System.out.println("4.Remove a food item ");
             System.out.println("5.Place order ");
-            System.out.println("10.Exit\n");
+            System.out.println("6.Print all veg item ");
+            System.out.println("7.Print all Non veg item ");
+            System.out.println("8.Update order status ");
+            System.out.println("9.View all orders ");
+            System.out.println("10.View all waiting orders ");
+            System.out.println("11.View all prepared orders ");
+            System.out.println("12.View all delivered orders ");
+            System.out.println("13.View all cancelled orders ");
+            System.out.println("14.Cancel an order ");
+            System.out.println("15.Exit\n");
             choice = sc.nextInt();
             switch (choice) {
                 case 1:
@@ -79,10 +85,38 @@ public class Main {
                     break;
                 case 4:
                     foodManager.removeFoodItem();
+                    break;
                 case 5:
                     placeOrder();
                     break;
+                case 6:
+                    foodManager.printAllVegItems();
+                    break;
+                case 7:
+                    foodManager.printAllNonVegItems();
+                    break;
+                case 8:
+                    orderManager.updateOrderStatus();
+                    break;
+                case 9:
+                    orderManager.viewAllOrder();
+                    break;
                 case 10:
+                    orderManager.printAllWaitingOrders();
+                    break;
+                case 11:
+                    orderManager.printAllPreparedOrders();
+                    break;
+                case 12:
+                    orderManager.printAllDeliveredOrders();
+                    break;
+                case 13:
+                    orderManager.printAllCancelledOrders();
+                    break;
+                case 14:
+                    orderManager.cancelOrder();
+                    break;
+                case 15:
                     break;
                 default:
                     System.out.println("Please enter valid input");
@@ -151,23 +185,24 @@ public class Main {
 
     void placeOrder() {
         Order order = new Order();
-        List<Order> orderList = new ArrayList<>();
+
+        System.out.println("Please enter order ID");
+        order.setOrderID(sc.nextInt());
 
         String name = "";
-        while (!name.equals("quit")) {
+        while (!name.equalsIgnoreCase("quit")) {
             System.out.println("Please enter food name :");
             name = sc.next().concat(sc.nextLine());
             FoodItem foodItem = foodManager.getFoodItem(name);
 
-            if (foodItem == null && !name.equalsIgnoreCase("quit")) {
-                System.out.println("Please enter correct name");
-            } else {
+            if (foodItem != null) {
                 System.out.println("Please enter food quantity :");
                 int quantity = sc.nextInt();
                 order.hMap.put(foodItem, quantity);
                 System.out.println("Total amount payable : " + order.setTotalPrice());
+            } else if (!name.equalsIgnoreCase("quit")) {
+                System.out.println("food item not present");
             }
-
         }
 
         System.out.println("\nPlease enter customer name :");
@@ -183,16 +218,17 @@ public class Main {
         System.out.println("Select payment method :");
         System.out.println("1.COD, 2.CREDIT_CARD, 3.DEBIT_CARD, 4.NET_BANKING, 5.UPI, 6.WALLET");
         switch (sc.nextInt()) {
-            case 1 -> order.setPaymentMethods(Order.PAYMENT_METHODS.COD);
-            case 2 -> order.setPaymentMethods(Order.PAYMENT_METHODS.CREDIT_CARD);
-            case 3 -> order.setPaymentMethods(Order.PAYMENT_METHODS.DEBIT_CARD);
-            case 4 -> order.setPaymentMethods(Order.PAYMENT_METHODS.NET_BANKING);
-            case 5 -> order.setPaymentMethods(Order.PAYMENT_METHODS.UPI);
-            case 6 -> order.setPaymentMethods(Order.PAYMENT_METHODS.WALLET);
+            case 1 -> order.setPaymentMethods(Order.PaymentMethods.COD);
+            case 2 -> order.setPaymentMethods(Order.PaymentMethods.CREDIT_CARD);
+            case 3 -> order.setPaymentMethods(Order.PaymentMethods.DEBIT_CARD);
+            case 4 -> order.setPaymentMethods(Order.PaymentMethods.NET_BANKING);
+            case 5 -> order.setPaymentMethods(Order.PaymentMethods.UPI);
+            case 6 -> order.setPaymentMethods(Order.PaymentMethods.WALLET);
         }
+
         order.setDateAndTime(new java.util.Date(System.currentTimeMillis()));
-        orderList.add(order);
-        System.out.println(orderList);
+        orderManager.add(order);
+        System.out.println(order);
     }
 }
 
